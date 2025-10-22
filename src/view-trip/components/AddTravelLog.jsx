@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 export default function AddTravelLog() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
+    user_name: "",
     action: "",
     location: "",
     notes: "",
-    image: ""
+    image: "",
   });
 
   const handleChange = (e) => {
@@ -17,28 +18,47 @@ export default function AddTravelLog() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setForm({ ...form, imageFile: file });
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm({ ...form, image: reader.result }); // Base64 string
-      };
+      reader.onloadend = () =>
+        setForm((prev) => ({ ...prev, image: reader.result }));
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSave = () => {
-    if (!form.action || !form.location) {
+  const handleSave = async () => {
+    if (!form.user_name || !form.action || !form.location) {
       alert("Please fill required fields.");
       return;
     }
 
-    const logs = JSON.parse(localStorage.getItem("travelLogs")) || [];
-    const newLog = {
-      ...form,
-      time: new Date().toLocaleString(),
-    };
-    logs.push(newLog);
-    localStorage.setItem("travelLogs", JSON.stringify(logs));
-    navigate("/view-logs");
+    const formData = new FormData();
+    formData.append("user_name", form.user_name);
+    formData.append("action", form.action);
+    formData.append("location", form.location);
+    formData.append("notes", form.notes);
+    if (form.imageFile) formData.append("image", form.imageFile);
+
+    try {
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/travel-logs",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Travel log saved successfully!");
+        navigate("/view-logs");
+      } else {
+        alert("Failed to save log.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error saving log.");
+    }
   };
 
   return (
@@ -46,7 +66,7 @@ export default function AddTravelLog() {
       className="min-h-screen flex items-center justify-center bg-cover bg-center p-6"
       style={{
         backgroundImage:
-          "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fit=crop&w=1600&q=80')"
+          "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fit=crop&w=1600&q=80')",
       }}
     >
       <div className="bg-white bg-opacity-90 backdrop-blur-md p-6 rounded-2xl shadow-xl w-full max-w-lg">
@@ -54,7 +74,22 @@ export default function AddTravelLog() {
           ✍️ Add Travel Log
         </h2>
 
-        <label className="block mb-2 font-semibold text-gray-700">Action*</label>
+        {/* User Name */}
+        <label className="block mb-2 font-semibold text-gray-700">
+          User Name*
+        </label>
+        <input
+          type="text"
+          name="user_name"
+          value={form.user_name}
+          onChange={handleChange}
+          className="border rounded-lg p-2 w-full mb-4 focus:ring-2 focus:ring-blue-400"
+          placeholder="Enter your name"
+        />
+
+        <label className="block mb-2 font-semibold text-gray-700">
+          Action*
+        </label>
         <select
           name="action"
           value={form.action}

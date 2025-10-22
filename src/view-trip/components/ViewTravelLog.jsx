@@ -1,20 +1,35 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ViewTravelLogs() {
   const navigate = useNavigate();
-  const logs = JSON.parse(localStorage.getItem("travelLogs")) || [];
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const clearLogs = () => {
-    localStorage.removeItem("travelLogs");
-    window.location.reload();
-  };
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await fetch(
+          "http://http://127.0.0.1:8000/api/travel-logs"
+        );
+        const data = await res.json();
+        setLogs(data || []);
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLogs();
+  }, []);
 
   return (
     <div
       className="min-h-screen bg-cover bg-center p-6"
       style={{
         backgroundImage:
-          "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?fit=crop&w=1600&q=80')"
+          "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?fit=crop&w=1600&q=80')",
       }}
     >
       <div className="bg-white bg-opacity-90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-6xl mx-auto">
@@ -29,43 +44,53 @@ export default function ViewTravelLogs() {
           >
             ➕ Add New Log
           </button>
-          {logs.length > 0 && (
-            <button
-              onClick={clearLogs}
-              className="bg-red-500 hover:bg-red-600 transition text-white px-4 py-2 rounded-lg shadow-md"
-            >
-              🗑 Clear All Logs
-            </button>
-          )}
         </div>
 
-        {logs.length === 0 ? (
+        {loading ? (
+          <p className="text-center text-gray-600 text-lg">Loading logs...</p>
+        ) : logs.length === 0 ? (
           <p className="text-center text-gray-600 text-lg">No logs yet.</p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {logs.map((log, idx) => (
+            {logs.map((log) => (
               <div
-                key={idx}
+                key={log.id}
                 className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
               >
                 {log.image && (
                   <img
-                    src={log.image}
+                    src={
+                      log.image.startsWith("http")
+                        ? log.image
+                        : `http://http://127.0.0.1:8000/storage/${log.image}`
+                    }
                     alt="Log"
                     className="w-full h-48 object-cover"
                   />
                 )}
                 <div className="p-4">
-                  <p className="text-sm text-gray-500">{log.time}</p>
-                  <h3 className="text-lg font-bold text-gray-800">
+                  {/* user_name */}
+                  {log.user_name && (
+                    <p className="text-sm font-semibold text-gray-700">
+                      👤 {log.user_name}
+                    </p>
+                  )}
+
+                  <h3 className="text-lg font-bold text-gray-800 mt-1">
                     {log.action}
                   </h3>
+
                   <p className="text-gray-600">
                     📍 <span className="font-semibold">{log.location}</span>
                   </p>
+
                   {log.notes && (
                     <p className="mt-2 text-gray-700">{log.notes}</p>
                   )}
+
+                  <p className="text-xs text-gray-500 mt-3">
+                    {new Date(log.created_at).toLocaleString()}
+                  </p>
                 </div>
               </div>
             ))}
