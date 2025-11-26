@@ -10,10 +10,10 @@ export default function ViewTravelLogs() {
     const fetchLogs = async () => {
       try {
         const res = await fetch(
-          "http://http://127.0.0.1:8000/api/travel-logs"
+          "http://127.0.0.1:8000/api/travel-logs"
         );
         const data = await res.json();
-        setLogs(data || []);
+        setLogs(data.data || []);
       } catch (error) {
         console.error("Error fetching logs:", error);
       } finally {
@@ -62,7 +62,7 @@ export default function ViewTravelLogs() {
                     src={
                       log.image.startsWith("http")
                         ? log.image
-                        : `http://http://127.0.0.1:8000/storage/${log.image}`
+                        : `http://127.0.0.1:8000${log.image}`
                     }
                     alt="Log"
                     className="w-full h-48 object-cover"

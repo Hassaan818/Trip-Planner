@@ -20,12 +20,12 @@ function Itinerary({ trip }) {
             </h2>
 
             {/* 🌤 Show weather if available */}
-            {item.weatherData && (
+            {/* {item.weatherData && (
               <h5 className="text-sm text-gray-700 mb-2 mt-2">
                 <span className="font-medium">Weather:</span>{" "}
                 <strong>{item.weatherData.conditions}, {item.weatherData.temperature}</strong>
               </h5>
-            )}
+            )} */}
 
             <div className="grid md:grid-cols-2 gap-5">
               {item.plan.map((place, index) => (
@@ -36,7 +36,7 @@ function Itinerary({ trip }) {
                   >
                     {place.time}
                   </h2>
-                  <PlaceCard place={place} />
+                  <PlaceCard place={{ ...place, weather: item.weatherData }} />
                 </div>
               ))}
             </div>

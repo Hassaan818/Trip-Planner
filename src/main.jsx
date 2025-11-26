@@ -12,6 +12,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import HotelRoutePage from "./view-trip/components/HotelRoutePage.jsx";
 import AddTravelLog from "./view-trip/components/AddTravelLog.jsx";
 import ViewTravelLogs from "./view-trip/components/ViewTravelLog.jsx";
+import ProtectedRoute from "./components/custom/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,23 +21,52 @@ const router = createBrowserRouter([
   },
   {
     path: "/create-trip",
-    element: <CreateTrip />,
+    element: (
+      <ProtectedRoute>
+        <CreateTrip />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/view-trip/:tripId",
-    element: <ViewTrip />,
+    element: (
+      <ProtectedRoute>
+        <ViewTrip />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/my-trips",
-    element: <MyTrips />,
+    element: (
+      <ProtectedRoute>
+        <MyTrips />
+      </ProtectedRoute>
+    ),
   },
-
   {
     path: "/routes",
-    element: <HotelRoutePage />,
+    element: (
+      <ProtectedRoute>
+        <HotelRoutePage />
+      </ProtectedRoute>
+    ),
   },
-  { path: "/add-log", element: <AddTravelLog /> },
-  { path: "/view-logs", element: <ViewTravelLogs /> },
+  {
+    path: "/add-log",
+    element: (
+      <ProtectedRoute>
+        <AddTravelLog />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/view-logs",
+    element: (
+      <ProtectedRoute>
+        <ViewTravelLogs />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -7,6 +7,7 @@ import InfoSection from "@/view-trip/components/InfoSection";
 import Hotels from "@/view-trip/components/Hotels";
 import Itinerary from "@/view-trip/components/Itinerary";
 import Footer from "@/components/custom/Footer";
+import ScenicStops from "../components/ScenicSpots";
 
 function ViewTrip() {
   const { tripId } = useParams();
@@ -26,7 +27,8 @@ function ViewTrip() {
 
     if (docSnap.exists()) {
       const tripData = docSnap.data();
-      setTrip(tripData);      
+      setTrip(tripData);
+      console.log('trip data', tripData)
     } else {
       toast("No trip found!");
     }
@@ -41,6 +43,7 @@ function ViewTrip() {
 
       <Hotels trip={trip} />
 
+      <ScenicStops trip={trip} />
       {/*Daily Itinerary */}
 
       <Itinerary trip={trip} />

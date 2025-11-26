@@ -4,7 +4,7 @@ const apiKey = import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
 });
 
 const generationConfig = {
@@ -15,8 +15,6 @@ const generationConfig = {
     responseMimeType: "application/json",
 };
 
-
-
 export const chatSession = model.startChat({
     generationConfig,
     history: [
@@ -24,9 +22,22 @@ export const chatSession = model.startChat({
             role: "user",
             parts: [
                 {
-                    text: `Generate Travel Plan for Location: Las Vegas, for 3 Days for a Couple with a Cheap budget. 
-                    Include many hotel options and a detailed itinerary in JSON format.`,
-                },
+                    text: `
+      Generate a detailed travel plan starting from: Los Angeles, to destination: Las Vegas, for 3 days for a couple with a cheap budget.
+
+      The plan must be returned **strictly in JSON format** with these three keys:
+      - "hotels": (array of hotel objects)
+      - "scenicStops": (array of scenic stop objects, even if empty)
+      - "itinerary": (array of daily plans)
+
+      If scenic or tourist stops are not applicable, return "scenicStops": [] — do not omit the key.
+      
+      Each scenic stop object must contain:
+      "placeName", "placeDetails", "placeImageUrl", "geoCoordinates", "ticketPricing", and "timeToExplore".
+
+      Do not include any explanation or text outside the JSON.
+      `
+                }
             ],
         },
         {
@@ -52,6 +63,32 @@ export const chatSession = model.startChat({
             "geoCoordinates": "36.1372, -115.1628",
             "rating": "3 stars",
             "description": "Affordable lodging with a lively atmosphere. Features a theme park, casino, and multiple restaurants."
+        }
+    ],
+    "scenicStops": [
+        {
+            "placeName": "Elmer's Bottle Tree Ranch",
+            "placeDetails": "A quirky roadside attraction featuring trees made of colorful glass bottles.",
+            "placeImageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Bottle_Tree_Ranch_-_California.jpg",
+            "geoCoordinates": "34.6658, -117.3405",
+            "ticketPricing": "Free",
+            "timeToExplore": "30-45 minutes"
+        },
+        {
+            "placeName": "Mojave National Preserve",
+            "placeDetails": "A scenic desert area with sand dunes, Joshua trees, and hiking trails — perfect for a nature break on your drive.",
+            "placeImageUrl": "https://www.nps.gov/common/uploads/structured_data/3C7B5A3F-1DD8-B71B-0B20E21C3E7C1D5E.jpg",
+            "geoCoordinates": "35.012, -115.473",
+            "ticketPricing": "$15 per vehicle",
+            "timeToExplore": "1-2 hours"
+        },
+        {
+            "placeName": "Seven Magic Mountains",
+            "placeDetails": "A colorful art installation of stacked painted boulders located near Las Vegas.",
+            "placeImageUrl": "https://sevenmagicmountains.com/wp-content/uploads/2016/05/Seven-Magic-Mountains-Visit.jpg",
+            "geoCoordinates": "35.8344, -115.2705",
+            "ticketPricing": "Free",
+            "timeToExplore": "30-45 minutes"
         }
     ],
     "itinerary": [

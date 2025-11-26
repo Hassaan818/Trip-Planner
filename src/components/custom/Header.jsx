@@ -26,10 +26,12 @@ function Header() {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [admin, setAdmin] = useState("");
 
   useEffect(() => {
     console.log(user);
-  },[])
+    setAdmin(user)
+  },[]);
 
   const login = useGoogleLogin({
     onSuccess: (codeResp) => GetUserProfile(codeResp),
@@ -56,7 +58,7 @@ function Header() {
       style={{ zIndex: 2 }}
     >
     
-      <h3><strong>Wander Guide</strong>  </h3>
+      <a href='/'><strong><img height={150} width={150} src="/n logo.PNG" alt="" /></strong>  </a>
       <div>
         {user ?
 

@@ -34,7 +34,7 @@ export const SelectBudgetOptions = [
         id: 1,
         title: 'Economical',
         desc: 'Travel smart, spend less',
-        icon: '🪙',
+        icon: '💸',
     },
     {
         id: 2,
@@ -52,4 +52,29 @@ export const SelectBudgetOptions = [
 
 
 
-export const AI_PROMPT = 'Generate Travel Plan for Location: {location}, for {totalDays} Days for {people} with a {budget} budget, give me a list of hotel options with the hotel name, hotel address, price, hotel image url, geo coordinates, rating, descriptions and suggest itinerary with place name, place details, place image url, geo coordinates, ticket pricing, amount of time to explore each location and what it depends on, all that for each of the locations for {totalDays} days with each day plan with the best time to visit in JSON format and make sure the itinerary includes weather data for each day. and make sure the weather object name is weatherData.';
+export const AI_PROMPT = `
+Generate a detailed travel plan for the following details:
+- Location: {location}
+- Duration: {totalDays} days
+- Travelers: {people}
+- Budget: {budget}
+
+The response must be returned **strictly in JSON format** with the following three top-level keys:
+1. "hotels" (array of hotel objects)
+2. "scenicStops" (array of scenic stop objects — can be empty [])
+3. "itinerary" (array of daily plans)
+
+If any of these sections are not applicable, return them as an empty array (e.g., "scenicStops": []).
+
+Each hotel object must include:
+"hotelName", "hotelAddress", "price", "hotelImageUrl", "geoCoordinates", "rating", "description".
+
+Each scenic stop object must include:
+"placeName", "placeDetails", "placeImageUrl", "geoCoordinates", "ticketPricing", "timeToExplore".
+
+Each day in the itinerary must include:
+"day", "plan" (array of activities), and each activity object should include:
+"time", "placeName", "placeDetails", "placeImageUrl", "geoCoordinates", "ticketPricing", "timeToExplore", and a "weatherData" field describing the expected weather for that day.
+
+Do not include any text, explanation, markdown, or extra formatting outside the JSON object.
+`;

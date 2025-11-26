@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddTravelLog() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("user from storage", user?.given_name);
   const [form, setForm] = useState({
-    user_name: "",
+    user_name: user?.given_name ? user?.given_name : "",
     action: "",
     location: "",
     notes: "",

@@ -81,17 +81,29 @@ function CreateTrip() {
     const user = JSON.parse(localStorage.getItem('user'));
     const docId = Date.now().toString();
 
+    let parsedData;
+    try {
+      parsedData = JSON.parse(TripData);
+    } catch (err) {
+      console.error("❌ JSON Parsing Failed:", err);
+      console.log("Raw AI response:", TripData);
+      toast("Failed to parse AI response. Please try again!");
+      setLoading(false);
+      return;
+    }
+
+    console.log("✅ Parsed AI Trip Data:", parsedData);
+
     await setDoc(doc(db, "AITrips", docId), {
       userSelection: formData,
-      tripData: JSON.parse(TripData),
+      tripData: parsedData,
       userEmail: user?.email,
       id: docId,
     });
 
     setLoading(false);
-    navigate('/view-trip/' + docId);
+    navigate("/view-trip/" + docId);
   };
-
   const customStyles = {
     placeholder: (provided) => ({
       ...provided,
@@ -149,7 +161,7 @@ function CreateTrip() {
                   key={index}
                   onClick={() => handleInputChange('budget', item.title)}
                   className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg transition 
-                  ${formData?.budget === item.title ? 'shadow-lg border-blue-500' : ''}`}
+                  ${formData?.budget === item.title ? 'shadow-2xl border-blue-800' : ''}`}
                 >
                   <h2 className="text-4xl">{item.icon}</h2>
                   <h2 className="font-bold text-lg text-gray-900">{item.title}</h2>
@@ -167,7 +179,7 @@ function CreateTrip() {
                   key={index}
                   onClick={() => handleInputChange('people', item.people)}
                   className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg transition
-                  ${formData?.people === item.people ? 'shadow-lg border-blue-500' : ''}`}
+                  ${formData?.people === item.people ? 'shadow-2xl border-blue-800' : ''}`}
                 >
                   <h2 className="text-4xl">{item.icon}</h2>
                   <h2 className="font-bold text-lg text-gray-900">{item.title}</h2>
