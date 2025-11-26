@@ -13,11 +13,16 @@ import HotelRoutePage from "./view-trip/components/HotelRoutePage.jsx";
 import AddTravelLog from "./view-trip/components/AddTravelLog.jsx";
 import ViewTravelLogs from "./view-trip/components/ViewTravelLog.jsx";
 import ProtectedRoute from "./components/custom/ProtectedRoute.jsx";
+import About from "./about/about.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
   {
     path: "/create-trip",
