@@ -43,7 +43,7 @@ export default function AddTravelLog() {
 
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/travel-logs",
+        "https://wanderguide.thenetbotz.com/api/travel-logs",
         {
           method: "POST",
           body: formData,

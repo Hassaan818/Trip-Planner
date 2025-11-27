@@ -10,7 +10,7 @@ export default function ViewTravelLogs() {
     const fetchLogs = async () => {
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/api/travel-logs"
+          "https://wanderguide.thenetbotz.com/api/travel-logs"
         );
         const data = await res.json();
         setLogs(data.data || []);
